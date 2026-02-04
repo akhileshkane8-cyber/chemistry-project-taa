@@ -1,0 +1,1794 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wastewater Management - Advanced Chemistry Project</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #ff6b6b;
+            --success: #4ecdc4;
+            --warning: #f7b731;
+            --dark: #2c3e50;
+            --light-bg: #f8f9ff;
+            --dark-bg: #0f0f1a;
+            --light-card: rgba(255, 255, 255, 0.9);
+            --dark-card: rgba(30, 30, 50, 0.8);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            line-height: 1.8;
+            color: #2c3e50;
+            background: var(--light-bg);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s;
+        }
+
+        body[data-theme="dark"] {
+            background: var(--dark-bg);
+            color: #e0e0e0;
+        }
+
+        body[data-theme="gradient"] {
+            background: linear-gradient(135deg, #00d4ff 0%, #0099ff 25%, #00cc99 50%, #ff6b35 75%, #f7931e 100%);
+            background-attachment: fixed;
+            background-size: 400% 400%;
+            animation: gradientBackground 15s ease infinite;
+        }
+
+        @keyframes gradientBackground {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        @keyframes floatIn {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.3; }
+            50% { transform: scale(1.2); opacity: 0.5; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+
+        @keyframes rotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(102, 126, 234, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(102, 126, 234, 0.8); }
+        }
+
+        @keyframes moveGrid {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(40px); }
+        }
+
+        @keyframes fillProgress {
+            from { width: 0%; }
+            to { width: var(--progress, 100%); }
+        }
+
+        @keyframes floatParticle {
+            0%, 100% { transform: translateY(0) translateX(0) scale(1); opacity: 0.3; }
+            25% { transform: translateY(-100px) translateX(50px) scale(1.2); opacity: 0.6; }
+            50% { transform: translateY(-200px) translateX(-50px) scale(0.8); opacity: 0.4; }
+            75% { transform: translateY(-100px) translateX(-100px) scale(1.1); opacity: 0.5; }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes moveLight {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(100px, 100px); }
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" stroke-width="0.5" opacity="0.05"/></pattern></defs><rect width="1200" height="600" fill="url(%23grid)"/></svg>');
+            pointer-events: none;
+            opacity: 0.5;
+            z-index: 1;
+        }
+
+        .floating-particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+        }
+
+        .particle-sphere {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            animation: floatParticle 20s infinite ease-in-out;
+            filter: blur(1px);
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            padding: 1rem 2rem;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 0.8s ease;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        body[data-theme="dark"] .navbar {
+            background: rgba(15, 15, 26, 0.9);
+            border-bottom-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+            letter-spacing: -0.5px;
+        }
+
+        .nav-center {
+            display: flex;
+            gap: 2rem;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .nav-link {
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        body[data-theme="dark"] .nav-link {
+            color: #e0e0e0;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.3s;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-controls {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            color: var(--primary);
+            padding: 0.6rem 1.2rem;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        body[data-theme="dark"] .nav-btn {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            border-color: rgba(102, 126, 234, 0.5);
+            color: #a8d5ff;
+        }
+
+        .nav-btn:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(102, 126, 234, 0.2);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        @media (max-width: 1024px) {
+            .nav-center {
+                display: none;
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 10;
+            max-width: 1200px;
+            margin: 120px auto 0;
+            padding: 0 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            padding: 60px 20px;
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%);
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+            animation: fadeInUp 1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        body[data-theme="dark"] header {
+            background: linear-gradient(135deg, rgba(30, 30, 50, 0.95) 0%, rgba(20, 20, 40, 0.9) 100%);
+            border-color: rgba(102, 126, 234, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.15) 0%, transparent 70%);
+            animation: pulse 4s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2, #ff6b6b);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: slideInLeft 0.8s ease;
+            position: relative;
+            z-index: 1;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        body[data-theme="dark"] h1 {
+            background: linear-gradient(135deg, #a8d5ff, #b8a5ff, #ff9fa8);
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            color: #555;
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease 0.2s both;
+            font-weight: 500;
+        }
+
+        body[data-theme="dark"] .subtitle {
+            color: #b0b0c0;
+        }
+
+        .school-info {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+            animation: fadeInUp 1s ease 0.4s both;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.05) 100%);
+            padding: 1.5rem 2rem;
+            border-radius: 15px;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            color: var(--dark);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s;
+        }
+
+        body[data-theme="dark"] .info-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-color: rgba(102, 126, 234, 0.3);
+            color: #e0e0e0;
+        }
+
+        .info-card:hover {
+            transform: translateY(-8px);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.1) 100%);
+            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.15);
+            border-color: rgba(102, 126, 234, 0.4);
+        }
+
+        .toc-container {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%);
+            padding: 3rem;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            margin-bottom: 4rem;
+            animation: fadeInUp 1s ease 0.6s both;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+        }
+
+        body[data-theme="dark"] .toc-container {
+            background: linear-gradient(135deg, rgba(30, 30, 50, 0.95) 0%, rgba(20, 20, 40, 0.9) 100%);
+            border-color: rgba(102, 126, 234, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .toc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .toc-item {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            font-weight: 600;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.25);
+        }
+
+        .toc-item::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
+            animation: moveLight 6s ease-in-out infinite;
+        }
+
+        .toc-item:nth-child(even) {
+            background: linear-gradient(135deg, #4ecdc4 0%, #45b7d1 100%);
+            box-shadow: 0 8px 24px rgba(78, 205, 196, 0.25);
+        }
+
+        .toc-item:nth-child(3n) {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.25);
+        }
+
+        .toc-item:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 24px 48px rgba(102, 126, 234, 0.3);
+        }
+
+        .toc-item strong {
+            position: relative;
+            z-index: 2;
+            display: block;
+        }
+
+        .section {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%);
+            padding: 3rem;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease both;
+            color: #2c3e50;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+        }
+
+        body[data-theme="dark"] .section {
+            background: linear-gradient(135deg, rgba(30, 30, 50, 0.95) 0%, rgba(20, 20, 40, 0.9) 100%);
+            border-color: rgba(102, 126, 234, 0.2);
+            color: #e0e0e0;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.08) 0%, transparent 70%);
+            animation: float 8s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #667eea;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+        }
+
+        .section h2:hover {
+            color: #764ba2;
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(10px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+        }
+
+        body[data-theme="dark"] .section h2 {
+            color: #a8d5ff;
+        }
+
+        body[data-theme="dark"] .section h2:hover {
+            color: #d4e8ff;
+            background: rgba(168, 213, 255, 0.15);
+            box-shadow: 0 8px 24px rgba(168, 213, 255, 0.25);
+        }
+
+        .section h3 {
+            font-size: 1.5rem;
+            color: #667eea;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+            font-weight: 700;
+        }
+
+        body[data-theme="dark"] .section h3 {
+            color: #a8d5ff;
+        }
+
+        .section p {
+            font-size: 1.05rem;
+            line-height: 1.9;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+            font-weight: 400;
+        }
+
+        .section ul, .section ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section li {
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+            font-weight: 400;
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(247, 183, 49, 0.15) 0%, rgba(255, 107, 107, 0.15) 100%);
+            border-left: 4px solid var(--warning);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 2rem 0;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(247, 183, 49, 0.3);
+            transition: all 0.3s;
+        }
+
+        body[data-theme="dark"] .highlight-box {
+            background: linear-gradient(135deg, rgba(247, 183, 49, 0.2) 0%, rgba(255, 107, 107, 0.2) 100%);
+            border-color: rgba(247, 183, 49, 0.5);
+        }
+
+        .highlight-box:hover {
+            transform: translateX(5px);
+            box-shadow: 0 12px 32px rgba(247, 183, 49, 0.15);
+        }
+
+        .chemical-formula {
+            font-family: 'JetBrains Mono', monospace;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(78, 205, 196, 0.1) 100%);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            display: inline-block;
+            margin: 0.5rem 0;
+            color: #667eea;
+            font-weight: 600;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            transition: all 0.3s;
+        }
+
+        body[data-theme="dark"] .chemical-formula {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(78, 205, 196, 0.2) 100%);
+            color: #a8d5ff;
+            border-color: rgba(102, 126, 234, 0.4);
+        }
+
+        .chemical-formula:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.2);
+        }
+
+        .process-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 1.5rem 0;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            z-index: 1;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.25);
+        }
+
+        .process-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+            animation: rotate 10s linear infinite;
+        }
+
+        .process-card:nth-child(even) {
+            background: linear-gradient(135deg, #4ecdc4 0%, #45b7d1 100%);
+            box-shadow: 0 10px 30px rgba(78, 205, 196, 0.25);
+        }
+
+        .process-card:nth-child(3n) {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.25);
+        }
+
+        .process-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 24px 48px rgba(102, 126, 234, 0.35);
+        }
+
+        .process-card h4 {
+            color: white;
+            font-size: 1.3rem;
+            position: relative;
+            z-index: 2;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .process-card p {
+            position: relative;
+            z-index: 2;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 2rem 0;
+            position: relative;
+            z-index: 1;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        body[data-theme="dark"] .data-table {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: left;
+            font-weight: 700;
+        }
+
+        .data-table td {
+            padding: 1.2rem;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+            background: rgba(102, 126, 234, 0.02);
+        }
+
+        body[data-theme="dark"] .data-table td {
+            border-bottom-color: rgba(102, 126, 234, 0.2);
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .data-table tr:hover td {
+            background: rgba(102, 126, 234, 0.08);
+            transition: all 0.3s;
+        }
+
+        body[data-theme="dark"] .data-table tr:hover td {
+            background: rgba(102, 126, 234, 0.12);
+        }
+
+        .conclusion-section {
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.15) 0%, rgba(69, 183, 209, 0.15) 100%);
+            padding: 3rem;
+            border-radius: 15px;
+            border: 2px solid rgba(78, 205, 196, 0.3);
+            position: relative;
+            z-index: 1;
+            margin: 3rem 0;
+        }
+
+        body[data-theme="dark"] .conclusion-section {
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.2) 0%, rgba(69, 183, 209, 0.2) 100%);
+            border-color: rgba(78, 205, 196, 0.4);
+        }
+
+        .references {
+            background: rgba(102, 126, 234, 0.05);
+            padding: 2rem;
+            border-radius: 12px;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        body[data-theme="dark"] .references {
+            background: rgba(102, 126, 234, 0.1);
+            border-color: rgba(102, 126, 234, 0.2);
+        }
+
+        .reference-item {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-left: 3px solid var(--success);
+            padding-left: 1.5rem;
+            transition: all 0.3s;
+            border-radius: 4px;
+        }
+
+        .reference-item:hover {
+            background: rgba(78, 205, 196, 0.1);
+            transform: translateX(5px);
+        }
+
+        body[data-theme="dark"] .reference-item:hover {
+            background: rgba(78, 205, 196, 0.15);
+        }
+
+        .interactive-quiz {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            padding: 2rem;
+            border-radius: 15px;
+            margin: 2rem 0;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.25);
+        }
+
+        .quiz-btn {
+            background: white;
+            color: #ff6b35;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 1rem;
+            font-size: 1rem;
+        }
+
+        .quiz-btn:hover {
+            transform: scale(1.08);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 10px;
+            margin: 2rem 0;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2, #4ecdc4);
+            width: 0%;
+            animation: fillProgress 2s ease;
+            border-radius: 10px;
+        }
+
+        .scroll-indicator {
+            position: fixed;
+            top: 100px;
+            right: 2rem;
+            width: 4px;
+            height: 60px;
+            background: rgba(102, 126, 234, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            z-index: 500;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .scroll-progress {
+            height: 100%;
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            width: 100%;
+            transform-origin: top;
+        }
+
+        footer {
+            text-align: center;
+            color: #2c3e50;
+            padding: 3rem;
+            position: relative;
+            z-index: 10;
+            background: rgba(255,255,255,0.9);
+            margin-top: 4rem;
+            border-top: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        body[data-theme="dark"] footer {
+            background: rgba(15, 15, 26, 0.9);
+            color: #e0e0e0;
+            border-top-color: rgba(102, 126, 234, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .subtitle { font-size: 1.2rem; }
+            .section { padding: 1.5rem; }
+            .container { margin-top: 80px; }
+            .navbar { padding: 0.8rem 1rem; }
+            .toc-grid { grid-template-columns: 1fr; }
+            .school-info { gap: 1rem; }
+        }
+
+        .glow {
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 10px rgba(102, 126, 234, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(102, 126, 234, 0.8); }
+        }
+
+        /* Search functionality */
+        .search-box {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 2rem auto;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem 1.5rem 1rem 3rem;
+            font-size: 1rem;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            color: #2c3e50;
+            transition: all 0.3s;
+        }
+
+        body[data-theme="dark"] .search-input {
+            background: rgba(30, 30, 50, 0.95);
+            color: #e0e0e0;
+            border-color: rgba(102, 126, 234, 0.3);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+        }
+
+        .search-input::placeholder {
+            color: #999;
+        }
+
+        /* Expandable sections */
+        .expandable-section {
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-header {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            user-select: none;
+            transition: all 0.3s;
+        }
+
+        .section-header:hover {
+            background: rgba(102, 126, 234, 0.05);
+            border-radius: 8px;
+        }
+
+        .expand-icon {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s;
+        }
+
+        .expand-icon.open {
+            transform: rotate(180deg);
+        }
+
+        .section-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .section-content.open {
+            max-height: 1000px;
+        }
+
+        /* Interactive timeline */
+        .timeline {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            animation: slideInLeft 0.8s ease both;
+        }
+
+        .timeline-dot {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            position: relative;
+        }
+
+        .timeline-dot::after {
+            content: '';
+            position: absolute;
+            width: 2px;
+            height: 100px;
+            background: rgba(102, 126, 234, 0.2);
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .timeline-dot:last-child::after {
+            display: none;
+        }
+
+        .timeline-content {
+            flex: 1;
+        }
+
+        /* Code blocks */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            color: #667eea;
+        }
+
+        body[data-theme="dark"] code {
+            background: rgba(102, 126, 234, 0.2);
+            color: #a8d5ff;
+        }
+
+        /* Enhanced Interactivity */
+        .expandable {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .expandable-trigger {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #667eea;
+            font-weight: 600;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        body[data-theme="dark"] .expandable-trigger {
+            color: #a8d5ff;
+        }
+
+        .expandable-trigger:hover {
+            color: #764ba2;
+            transform: translateX(5px);
+        }
+
+        .expand-arrow {
+            display: inline-block;
+            transition: transform 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .expandable.expanded .expand-arrow {
+            transform: rotate(180deg);
+        }
+
+        .expandable-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding-top: 0;
+        }
+
+        .expandable.expanded .expandable-content {
+            max-height: 2000px;
+            padding-top: 1rem;
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 999;
+            animation: floatIn 0.8s ease;
+            border: none;
+        }
+
+        .fab:hover {
+            transform: scale(1.15) translateY(-5px);
+            box-shadow: 0 16px 40px rgba(102, 126, 234, 0.5);
+        }
+
+        .fab:active {
+            transform: scale(0.95);
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            cursor: help;
+            border-bottom: 2px dotted rgba(102, 126, 234, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .tooltip:hover {
+            border-bottom-color: #667eea;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            background-color: #667eea;
+            color: white;
+            text-align: center;
+            padding: 0.8rem;
+            border-radius: 8px;
+            position: absolute;
+            z-index: 1001;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tooltip-text::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #667eea transparent transparent transparent;
+        }
+
+        body[data-theme="dark"] .tooltip-text {
+            background-color: #764ba2;
+        }
+
+        body[data-theme="dark"] .tooltip-text::after {
+            border-color: #764ba2 transparent transparent transparent;
+        }
+
+        /* Stat Display */
+        .stat-display {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #667eea;
+            transition: all 0.3s ease;
+        }
+
+        body[data-theme="dark"] .stat-display {
+            color: #a8d5ff;
+        }
+
+        /* Counter animation */
+        @keyframes countUp {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .counter-element {
+            animation: countUp 0.6s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="floating-particles" id="particles"></div>
+    
+    <nav class="navbar">
+        <div class="logo">⚗️ WasteH₂O</div>
+        
+        <div class="nav-center">
+            <a href="#intro" class="nav-link">Introduction</a>
+            <a href="#processes" class="nav-link">Processes</a>
+            <a href="#chemistry" class="nav-link">Chemistry</a>
+            <a href="#conclusion" class="nav-link">Conclusion</a>
+        </div>
+
+        <div class="nav-controls">
+            <button class="nav-btn" onclick="toggleTheme()" title="Toggle theme">🌙</button>
+            <button class="nav-btn" onclick="scrollToTop()" title="Back to top">↑</button>
+        </div>
+    </nav>
+
+    <div class="scroll-indicator">
+        <div class="scroll-progress"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1>⚗️ WASTEWATER MANAGEMENT & TREATMENT ⚗️</h1>
+            <p class="subtitle">CBSE Class 7 - Chemistry Project</p>
+            <div class="school-info">
+                <div class="info-card"><strong>Class:</strong> VII</div>
+                <div class="info-card"><strong>Section E</strong> - Group 5</div>
+                <div class="info-card"><strong>Year:</strong> 2026</div>
+            </div>
+        </header>
+
+        <div class="toc-container">
+            <h2 style="color: #f7b731; text-align: center; margin-bottom: 2rem; text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);">📚 Table of Contents</h2>
+            <div class="toc-grid">
+                <div class="toc-item" onclick="scrollToSection('intro')"><strong>1. Introduction</strong></div>
+                <div class="toc-item" onclick="scrollToSection('objectives')"><strong>2. Objectives</strong></div>
+                <div class="toc-item" onclick="scrollToSection('literature')"><strong>3. Literature Review</strong></div>
+                <div class="toc-item" onclick="scrollToSection('types')"><strong>4. Types of Wastewater</strong></div>
+                <div class="toc-item" onclick="scrollToSection('processes')"><strong>5. Treatment Processes</strong></div>
+                <div class="toc-item" onclick="scrollToSection('chemistry')"><strong>6. Chemical Reactions</strong></div>
+                <div class="toc-item" onclick="scrollToSection('impact')"><strong>7. Environmental Impact</strong></div>
+                <div class="toc-item" onclick="scrollToSection('applications')"><strong>8. Practical Applications</strong></div>
+                <div class="toc-item" onclick="scrollToSection('findings')"><strong>9. Findings & Discussion</strong></div>
+                <div class="toc-item" onclick="scrollToSection('conclusion')"><strong>10. Conclusion</strong></div>
+            </div>
+        </div>
+
+        <section class="section" id="intro">
+            <h2>🌍 Introduction</h2>
+            <p>Wastewater management is one of the most critical challenges facing modern society. With rapid industrialization, urbanization, and population growth, the volume and complexity of wastewater generated has increased exponentially. This comprehensive project explores the chemistry behind wastewater treatment.</p>
+            <p>Wastewater refers to any water that has been adversely affected in quality by anthropogenic influence. It originates from homes, industries, agriculture, and commercial establishments. The presence of contaminants including organic matter, toxic chemicals, heavy metals, and pathogens makes untreated wastewater a serious threat to public health and the environment.</p>
+            <div class="progress-bar"><div class="progress-fill" style="--progress: 10%"></div></div>
+        </section>
+
+        <section class="section" id="objectives">
+            <h2>🎯 Objectives</h2>
+            <h3>Primary Objectives:</h3>
+            <ul>
+                <li>✅ To understand the sources, composition, and characteristics of wastewater</li>
+                <li>✅ To learn about various wastewater treatment methods and their chemical principles</li>
+                <li>✅ To study key chemical reactions involved in treatment processes</li>
+                <li>✅ To understand how chemistry helps protect the environment</li>
+                <li>✅ To recognize the importance of proper wastewater management for public health</li>
+            </ul>
+            <h3>Secondary Objectives:</h3>
+            <ul>
+                <li>🔬 To develop analytical and problem-solving skills</li>
+                <li>🔬 To understand sustainable practices in water management</li>
+                <li>🔬 To appreciate the role of chemistry in environmental protection</li>
+                <li>🔬 To connect theoretical chemistry with real-world applications</li>
+            </ul>
+            <div class="progress-bar"><div class="progress-fill" style="--progress: 20%"></div></div>
+        </section>
+
+        <section class="section" id="literature">
+            <h2>📖 Literature Review</h2>
+            <p>Wastewater treatment has been practiced for centuries, but modern scientific approaches began in the 19th century. The primary goal of wastewater treatment is to remove contaminants and restore water quality to acceptable standards.</p>
+            <h3>Evolution of Treatment Methods:</h3>
+            <div class="process-card"><h4>📅 Early 1800s</h4><p>Simple screening and settling methods were first introduced</p></div>
+            <div class="process-card"><h4>📅 Late 1800s</h4><p>Introduction of biological treatment processes</p></div>
+            <div class="process-card"><h4>📅 20th Century</h4><p>Development of advanced chemical and physical methods</p></div>
+            <div class="process-card"><h4>📅 21st Century</h4><p>Focus on resource recovery and sustainable practices</p></div>
+            <div class="progress-bar"><div class="progress-fill" style="--progress: 30%"></div></div>
+        </section>
+
+        <section class="section" id="types">
+            <h2>🌊 Types of Wastewater</h2>
+            <h3>Municipal Wastewater 🏠</h3>
+            <p>Originates from homes, schools, hospitals containing organic matter, inorganic salts, microorganisms, and detergents.</p>
+            <h3>Industrial Wastewater 🏭</h3>
+            <p>Varies by industry, containing heavy metals, organic chemicals, solvents, oils, and greases.</p>
+            <h3>Agricultural Wastewater 🌾</h3>
+            <p>Contains excess fertilizers, pesticides, and animal waste with high nutrient content.</p>
+            <table class="data-table">
+                <tr><th>Type</th><th>Primary Contaminants</th><th>Sources</th></tr>
+                <tr><td>Municipal</td><td>Organics, pathogens, nutrients</td><td>Homes, schools, offices</td></tr>
+                <tr><td>Industrial</td><td>Heavy metals, chemicals, oils</td><td>Factories, manufacturing plants</td></tr>
+                <tr><td>Agricultural</td><td>Nutrients, pesticides, sediments</td><td>Farms, livestock facilities</td></tr>
+            </table>
+            <div class="progress-bar"><div class="progress-fill" style="--progress: 40%"></div></div>
+        </section>
+
+        <section class="section" id="processes">
+            <h2>⚙️ Treatment Processes</h2>
+            <p>Wastewater treatment typically involves multiple stages, each designed to remove specific types of contaminants.</p>
+            <div class="process-card"><h4>1️⃣ Preliminary Treatment</h4><p>Removes large objects like rags, sticks, and plastics using screening and grit chambers.</p></div>
+            <div class="process-card"><h4>2️⃣ Primary Treatment</h4><p>Involves physical separation of settleable and floatable solids through sedimentation and flotation.</p></div>
+            <div class="process-card"><h4>3️⃣ Secondary Treatment</h4><p>Relies on biological processes to degrade organic matter using aerobic or anaerobic methods.</p></div>
+            <div class="process-card"><h4>4️⃣ Tertiary Treatment</h4><p>Advanced treatment removes remaining contaminants including nutrients, toxic chemicals, and microorganisms.</p></div>
+            <div class="process-card"><h4>5️⃣ Disinfection</h4><p>Eliminates harmful pathogens using chlorination, ozonation, or UV treatment.</p></div>
+            <div class="process-card"><h4>6️⃣ Sludge Treatment</h4><p>Processes accumulated solids through thickening, digestion, dewatering, and composting.</p></div>
+            <div class="progress-bar"><div class="progress-fill" style="--progress: 60%"></div></div>
+        </section>
+
+        <section class="section" id="chemistry">
+            <h2>⚗️ Chemical Reactions in Treatment</h2>
+            <h3>Coagulation and Flocculation</h3>
+            <div class="chemical-formula">Al₂(SO₄)₃ + 3Ca(OH)₂ → 2Al(OH)₃↓ + 3CaSO₄</div>
+            <h3>Chlorination for Disinfection</h3>
+            <div class="chemical-formula">Cl₂ + H₂O ⇌ HCl + HClO</div>
+            <h3>Aerobic Respiration</h3>
+            <div class="chemical-formula">C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + Energy</div>
+            <h3>Iron Oxidation</h3>
+            <div class="chemical-formula">4Fe²⁺ + O₂ + 10H₂O → 4Fe(OH)₃↓ + 8H⁺</div>
+            <h3>Nitrification</h3>
+            <div class="chemical-formula">2NH₄⁺ + 3O₂ → 2NO₂⁻ + 4H⁺ + 2H₂O</div>
+            <h3>Denitrification</h3>
+            <div class="chemical-formula">2NO₃⁻ + 10e⁻ + 12H⁺ → N₂ + 6H₂O</div>
+            <div class="highlight-box"><strong>💡 Key Insight:</strong> Each chemical reaction is carefully controlled through temperature, pH, and oxygen levels to ensure maximum contaminant removal.</div>
+            <div class="progress-bar"><div class="progress-fill" style="--progress: 70%"></div></div>
+        </section>
+
+        <section class="section" id="impact">
+            <h2>🌱 Environmental Impact</h2>
+            <h3>Eutrophication 🍃</h3>
+            <p>Excess nutrients promote rapid algae growth, leading to oxygen depletion and death of aquatic life.</p>
+            <h3>Pathogenic Contamination 🦠</h3>
+            <p>Untreated wastewater contains harmful bacteria, viruses, and parasites causing serious diseases.</p>
+            <h3>Chemical Pollution ☠️</h3>
+            <p>Heavy metals and toxic chemicals accumulate in aquatic ecosystems and bioaccumulate in food chains.</p>
+            <h3>Oxygen Depletion 💨</h3>
+            <p>Biodegradation of organic matter consumes dissolved oxygen, creating anaerobic conditions.</p>
+            <div class="highlight-box"><strong>📊 Global Fact:</strong> Over 2 billion people lack access to safe drinking water due to inadequate wastewater treatment infrastructure.</div>
+            <div class="progress-bar"><div class="progress-fill" style="--progress: 80%"></div></div>
+        </section>
+
+        <section class="section" id="applications">
+            <h2>🏗️ Practical Applications</h2>
+            <h3>Municipal Treatment Plants 🏢</h3>
+            <p>Cities operate large-scale treatment plants handling millions of gallons daily.</p>
+            <h3>Industrial Treatment Systems 🏭</h3>
+            <p>Industries have dedicated systems for their specific waste streams.</p>
+            <h3>Water Reuse and Recycling ♻️</h3>
+            <p>Modern plants produce reclaimed water for irrigation, cooling, and groundwater recharge.</p>
+            <h3>Biogas Generation ⚡</h3>
+            <p>Anaerobic digestion produces biogas for electricity generation.</p>
+            <div class="interactive-quiz">
+                <h4 style="color: white; margin-bottom: 1rem;">🎓 Quick Knowledge Check</h4>
+                <p style="color: white; margin-bottom: 1rem;">Test your understanding of wastewater treatment!</p>
+                <button class="quiz-btn" onclick="showQuiz()">Take Quiz →</button>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="--progress: 90%"></div></div>
+        </section>
+
+        <section class="section" id="findings">
+            <h2>📊 Findings & Discussion</h2>
+            <h3>Key Findings:</h3>
+            <ul>
+                <li>✓ Wastewater treatment is a multi-stage process combining physical, chemical, and biological methods</li>
+                <li>✓ Chemistry plays a central role in coagulation, disinfection, and nutrient removal</li>
+                <li>✓ Different processes are optimized for specific contaminants</li>
+                <li>✓ pH management is critical (optimal range: 6.5-8.5)</li>
+                <li>✓ Modern treatment can recover resources</li>
+            </ul>
+            <h3>Discussion:</h3>
+            <p>The chemistry of wastewater treatment demonstrates how scientific principles address environmental and public health challenges. The coordinated action of coagulants, disinfectants, and biological organisms creates systems capable of removing 99% or more of contaminants.</p>
+            <div class="progress-bar"><div class="progress-fill" style="--progress: 95%"></div></div>
+        </section>
+
+        <section class="section" id="conclusion">
+            <h2>🎯 Conclusion</h2>
+            <div class="conclusion-section">
+                <p>This project has comprehensively explored the chemistry of wastewater treatment, demonstrating how scientific principles address environmental and public health challenges. Wastewater treatment protects public health, preserves aquatic ecosystems, and recovers valuable resources.</p>
+                <p>As global population grows and environmental pressures increase, investment in treatment infrastructure is essential for sustainable water management and environmental protection.</p>
+                <p style="margin-top: 2rem; font-weight: bold; font-size: 1.2rem;">🌍 Together, we can ensure clean water for all! 🌍</p>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="--progress: 100%"></div></div>
+        </section>
+
+        <section class="section">
+            <h2>📚 References</h2>
+            <div class="references">
+                <div class="reference-item">1. Metcalf & Eddy. (2014). Wastewater Engineering: Treatment and Recovery. McGraw-Hill.</div>
+                <div class="reference-item">2. Davis, M. L., & Masten, S. J. (2013). Principles of Environmental Engineering and Science. McGraw-Hill.</div>
+                <div class="reference-item">3. WHO. (2015). Progress on Sanitation and Drinking Water. World Health Organization.</div>
+                <div class="reference-item">4. EPA. (2012). Wastewater Treatment Fundamentals. U.S. Environmental Protection Agency.</div>
+                <div class="reference-item">5. UNEP. (2016). Global Wastewater Treatment. United Nations Environment Programme.</div>
+                <div class="reference-item">6. Tchobanoglous, G., Burton, F. L., & Stensel, H. D. (2014). Wastewater Engineering: Treatment and Reuse. McGraw-Hill.</div>
+            </div>
+        </section>
+
+        <section class="section" style="background: linear-gradient(135deg, rgba(0,212,255,0.15) 0%, rgba(0,204,153,0.15) 100%); border: 2px solid rgba(0,212,255,0.5);">
+            <h2 style="background: linear-gradient(135deg, #ff6b35, #f7931e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">👥 Project Credits</h2>
+            <p style="font-size: 1.2rem; text-align: center; margin: 2rem 0;"><strong>Section E - Group 5</strong></p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                <div style="background: linear-gradient(135deg, rgba(0,212,255,0.3) 0%, rgba(0,212,255,0.1) 100%); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #00d4ff; text-align: center;">
+                    <h4 style="color: black; margin-bottom: 0.5rem;">👨‍💼 Aarush</h4>
+                </div>
+                <div style="background: linear-gradient(135deg, rgba(0,204,153,0.3) 0%, rgba(0,204,153,0.1) 100%); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #00cc99; text-align: center;">
+                    <h4 style="color: black; margin-bottom: 0.5rem;">👨‍💼 Akhilesh</h4>
+                </div>
+                <div style="background: linear-gradient(135deg, rgba(0,212,255,0.3) 0%, rgba(0,212,255,0.1) 100%); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #00d4ff; text-align: center;">
+                    <h4 style="color: black; margin-bottom: 0.5rem;">👨‍💼 Vihaan</h4>
+                </div>
+                <div style="background: linear-gradient(135deg, rgba(255,107,53,0.3) 0%, rgba(255,107,53,0.1) 100%); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #ff6b35; text-align: center;">
+                    <h4 style="color: black; margin-bottom: 0.5rem;">👨‍💼 Janav</h4>
+                </div>
+                <div style="background: linear-gradient(135deg, rgba(0,204,153,0.3) 0%, rgba(0,204,153,0.1) 100%); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #00cc99; text-align: center;">
+                    <h4 style="color: black; margin-bottom: 0.5rem;">👨‍💼 Shyam</h4>
+                </div>
+                <div style="background: linear-gradient(135deg, rgba(247,147,30,0.3) 0%, rgba(247,147,30,0.1) 100%); padding: 1.5rem; border-radius: 10px; border-left: 4px solid #f7931e; text-align: center;">
+                    <h4 style="color: black; margin-bottom: 0.5rem;">👨‍💼 Manan</h4>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+
+    <script>
+        // ============= Expandable Content Handler =============
+        class ExpandableHandler {
+            constructor() {
+                this.init();
+            }
+
+            init() {
+                document.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('expandable-trigger') || 
+                        e.target.parentElement.classList.contains('expandable-trigger')) {
+                        const expandable = e.target.closest('.expandable');
+                        if (expandable) {
+                            this.toggle(expandable);
+                        }
+                    }
+                });
+            }
+
+            toggle(element) {
+                element.classList.toggle('expanded');
+                const content = element.querySelector('.expandable-content');
+                if (element.classList.contains('expanded')) {
+                    this.animateIn(content);
+                }
+            }
+
+            animateIn(element) {
+                element.style.animation = 'none';
+                setTimeout(() => {
+                    element.style.animation = 'fadeInUp 0.4s ease';
+                }, 10);
+            }
+        }
+
+        // ============= Advanced Theme System =============
+        class ThemeManager {
+            constructor() {
+                this.themes = ['light', 'dark', 'gradient'];
+                this.currentTheme = localStorage.getItem('theme') || 'light';
+                this.init();
+            }
+
+            init() {
+                document.body.setAttribute('data-theme', this.currentTheme);
+                this.setupObserver();
+            }
+
+            toggle() {
+                const index = this.themes.indexOf(this.currentTheme);
+                this.currentTheme = this.themes[(index + 1) % this.themes.length];
+                localStorage.setItem('theme', this.currentTheme);
+                document.body.setAttribute('data-theme', this.currentTheme);
+                this.showThemeNotification();
+            }
+
+            showThemeNotification() {
+                const themes = { light: '☀️ Light', dark: '🌙 Dark', gradient: '🌈 Gradient' };
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 120px;
+                    right: 2rem;
+                    background: #667eea;
+                    color: white;
+                    padding: 1rem 1.5rem;
+                    border-radius: 12px;
+                    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+                    animation: slideInRight 0.4s ease;
+                    z-index: 10000;
+                    font-weight: 600;
+                `;
+                notification.textContent = `${themes[this.currentTheme]} Mode`;
+                document.body.appendChild(notification);
+                setTimeout(() => notification.remove(), 2000);
+            }
+
+            setupObserver() {
+                const observerOptions = {
+                    threshold: 0.1,
+                    rootMargin: '0px 0px -100px 0px'
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.animation = `fadeInUp 0.8s ease both`;
+                        }
+                    });
+                }, observerOptions);
+
+                document.querySelectorAll('.section, .toc-container').forEach(el => {
+                    observer.observe(el);
+                });
+            }
+        }
+
+        // ============= Particle System =============
+        class ParticleSystem {
+            constructor(containerId) {
+                this.container = document.getElementById(containerId);
+                this.particles = [];
+                this.colors = ['#667eea', '#764ba2', '#4ecdc4', '#ff6b35', '#f7931e'];
+                this.init();
+            }
+
+            init() {
+                for (let i = 0; i < 25; i++) {
+                    this.createParticle();
+                }
+            }
+
+            createParticle() {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                
+                const size = Math.random() * 80 + 40;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.opacity = Math.random() * 0.3 + 0.1;
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                
+                const sphere = document.createElement('div');
+                sphere.className = 'particle-sphere';
+                sphere.style.background = this.colors[Math.floor(Math.random() * this.colors.length)];
+                particle.appendChild(sphere);
+                this.container.appendChild(particle);
+                this.particles.push(particle);
+            }
+        }
+
+        // ============= Advanced Quiz System =============
+        class QuizSystem {
+            constructor() {
+                this.quizzes = [
+                    { 
+                        q: "What is the primary contaminant in municipal wastewater?", 
+                        opts: ["Organic matter", "Plastic", "Glass"], 
+                        ans: 0,
+                        hint: "Think about what comes from our homes daily"
+                    },
+                    { 
+                        q: "Which stage removes large objects?", 
+                        opts: ["Disinfection", "Preliminary", "Tertiary"], 
+                        ans: 1,
+                        hint: "This is the first step in treatment"
+                    },
+                    { 
+                        q: "What does coagulation primarily do?", 
+                        opts: ["Kills pathogens", "Destabilizes colloids", "Removes metals"], 
+                        ans: 1,
+                        hint: "It involves chemical bonding of small particles"
+                    },
+                    {
+                        q: "Which chemical is used for chlorination disinfection?",
+                        opts: ["Chlorine gas (Cl₂)", "Sodium chloride (NaCl)", "Potassium chloride (KCl)"],
+                        ans: 0,
+                        hint: "It's a reactive gas"
+                    },
+                    {
+                        q: "What is the optimal pH range for treatment?",
+                        opts: ["2-4", "6.5-8.5", "10-12"],
+                        ans: 1,
+                        hint: "It's neutral to slightly basic"
+                    }
+                ];
+                this.score = 0;
+                this.questionsAsked = 0;
+            }
+
+            getRandomQuiz() {
+                return this.quizzes[Math.floor(Math.random() * this.quizzes.length)];
+            }
+
+            show() {
+                const quiz = this.getRandomQuiz();
+                const modal = this.createModal(quiz);
+                document.body.appendChild(modal);
+            }
+
+            createModal(quiz) {
+                const modal = document.createElement('div');
+                modal.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.7);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10000;
+                    animation: fadeInUp 0.3s ease;
+                    backdrop-filter: blur(5px);
+                `;
+
+                const content = document.createElement('div');
+                content.style.cssText = `
+                    background: white;
+                    padding: 2rem;
+                    border-radius: 20px;
+                    max-width: 500px;
+                    width: 90%;
+                    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+                    animation: scaleIn 0.3s ease;
+                `;
+
+                const themeMode = document.body.getAttribute('data-theme');
+                if (themeMode === 'dark') {
+                    content.style.background = 'rgba(30, 30, 50, 0.95)';
+                    content.style.color = '#e0e0e0';
+                }
+
+                content.innerHTML = `
+                    <h3 style="color: #667eea; margin-bottom: 1rem; font-size: 1.3rem;">${quiz.q}</h3>
+                    <p style="color: #999; font-size: 0.9rem; margin-bottom: 1.5rem;">💡 ${quiz.hint}</p>
+                    <div style="display: flex; flex-direction: column; gap: 0.8rem; margin-bottom: 1.5rem;">
+                        ${quiz.opts.map((opt, i) => `
+                            <button class="quiz-option" data-index="${i}" style="
+                                padding: 0.8rem;
+                                border: 2px solid #e0e0e0;
+                                background: white;
+                                border-radius: 8px;
+                                cursor: pointer;
+                                transition: all 0.3s;
+                                text-align: left;
+                                font-weight: 500;
+                            ">${opt}</button>
+                        `).join('')}
+                    </div>
+                    <button onclick="this.parentElement.parentElement.remove()" style="
+                        width: 100%;
+                        padding: 0.8rem;
+                        background: #667eea;
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-weight: 600;
+                        transition: all 0.3s;
+                    ">Close</button>
+                `;
+
+                modal.appendChild(content);
+
+                content.querySelectorAll('.quiz-option').forEach((btn, idx) => {
+                    btn.addEventListener('mouseover', () => {
+                        if (!btn.disabled) {
+                            btn.style.transform = 'translateX(10px)';
+                            btn.style.background = 'rgba(102, 126, 234, 0.1)';
+                        }
+                    });
+                    btn.addEventListener('mouseout', () => {
+                        if (!btn.disabled) {
+                            btn.style.transform = 'translateX(0)';
+                            btn.style.background = 'white';
+                        }
+                    });
+                    btn.addEventListener('click', () => {
+                        const correct = idx === quiz.ans;
+                        btn.style.background = correct ? '#4ecdc4' : '#ff6b35';
+                        btn.style.color = 'white';
+                        btn.style.borderColor = correct ? '#4ecdc4' : '#ff6b35';
+                        btn.style.transform = 'scale(1.05)';
+                        
+                        content.querySelectorAll('.quiz-option').forEach(b => b.disabled = true);
+                        
+                        const resultDiv = document.createElement('div');
+                        resultDiv.style.cssText = `
+                            margin-top: 1rem;
+                            padding: 1rem;
+                            border-radius: 8px;
+                            background: ${correct ? '#4ecdc4' : '#ff6b35'}20;
+                            color: ${correct ? '#4ecdc4' : '#ff6b35'};
+                            font-weight: 600;
+                            text-align: center;
+                            animation: slideInUp 0.4s ease;
+                        `;
+                        resultDiv.textContent = correct ? '✅ Correct! Excellent!' : `❌ Incorrect. Answer: ${quiz.opts[quiz.ans]}`;
+                        content.appendChild(resultDiv);
+                    });
+                });
+
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) modal.remove();
+                });
+
+                return modal;
+            }
+        }
+
+        // ============= Scroll Progress =============
+        class ScrollProgress {
+            constructor() {
+                this.progressBar = document.querySelector('.scroll-progress');
+                this.init();
+            }
+
+            init() {
+                window.addEventListener('scroll', () => this.update());
+            }
+
+            update() {
+                const winScroll = document.documentElement.scrollTop;
+                const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrolled = (winScroll / height) * 100;
+                if (this.progressBar) {
+                    this.progressBar.style.height = scrolled + '%';
+                }
+            }
+        }
+
+        // ============= Interactive Tooltips =============
+        function initTooltips() {
+            document.addEventListener('mouseover', (e) => {
+                if (e.target.classList.contains('tooltip')) {
+                    const tooltipText = e.target.querySelector('.tooltip-text');
+                    if (tooltipText) {
+                        tooltipText.style.animation = 'slideInUp 0.3s ease';
+                    }
+                }
+            });
+        }
+
+        // ============= Smooth Scroll & Active Links =============
+        function setupSmoothScrolling() {
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        target.classList.add('glow');
+                        setTimeout(() => target.classList.remove('glow'), 2000);
+                    }
+                });
+            });
+        }
+
+        // ============= Global Functions =============
+        const themeManager = new ThemeManager();
+        const quizSystem = new QuizSystem();
+        const expandableHandler = new ExpandableHandler();
+        let particleSystem = null;
+        let scrollProgress = null;
+
+        function toggleTheme() {
+            themeManager.toggle();
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+                element.classList.add('glow');
+                setTimeout(() => element.classList.remove('glow'), 2000);
+            }
+        }
+
+        function showQuiz() {
+            quizSystem.show();
+        }
+
+        function addFAB() {
+            const fab = document.createElement('button');
+            fab.className = 'fab';
+            fab.innerHTML = '❓';
+            fab.title = 'Take a Quiz (Press ?)';
+            fab.onclick = showQuiz;
+            document.body.appendChild(fab);
+        }
+
+        // ============= Keyboard Shortcuts =============
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') scrollToTop();
+            if (e.key === '?') showQuiz();
+            if (e.ctrlKey && e.key === 'k') {
+                e.preventDefault();
+                document.getElementById('search')?.focus();
+            }
+        });
+
+        // ============= Initialize on Load =============
+        document.addEventListener('DOMContentLoaded', () => {
+            particleSystem = new ParticleSystem('particles');
+            scrollProgress = new ScrollProgress();
+            setupSmoothScrolling();
+            initTooltips();
+            themeManager.setupObserver();
+            addFAB();
+        });
+
+        // ============= Intersection Observer for Animations =============
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = `fadeInUp 0.8s ease ${index * 0.1}s both`;
+                }
+            });
+        }, observerOptions);
+
+        setTimeout(() => {
+            document.querySelectorAll('.toc-item, .process-card, .section').forEach(el => {
+                observer.observe(el);
+            });
+        }, 100);
+    </script>
+</body>
+</html>
